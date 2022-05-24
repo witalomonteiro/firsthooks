@@ -4,6 +4,7 @@ Nessa pequena aplicação não utilizamos Classes, ao invés usamos os React Hoo
 
 A aplicação consiste em realizamos uma busca através do login da própria API do GitHub e conseguirmos favoritar os repositórios escolhidos.
 
+---------------------------------------------------------------------------------------------------------------------------------------------
 
 # Getting Started in React Hooks
 
