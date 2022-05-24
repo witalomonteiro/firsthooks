@@ -1,25 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
 
-function App() {
+export default function App() {
+  const [repositorios, setRepositorios] = useState([]);
+
+  function buscar(usuario) {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(`https://api.github.com/users/${usuario}/repos`);
+        const json = await response.json();
+        setRepositorios(json);
+        console.log(usuario)
+      } catch (error) {
+        console.log("ERRO!", error);
+      }
+    };
+    fetchData();
+  }
+
+  useEffect(() => {
+    const filtro = repositorios.filter(repo => repo.favorito);
+    document.title = `(${filtro.length}) Favoritos`
+  }, [repositorios, setRepositorios])
+
+  function favoritar(id) {
+    const novoRepositorio = repositorios.map(repo => {
+      return repo.id === id ? { ...repo, favorito: !repo.favorito } : repo
+    });
+    setRepositorios(novoRepositorio);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <>
+      <h1>Favoritar Repositórios</h1>
+      <input 
+        type="text"
+        id="txtBusca"
+        placeholder="Buscar..."  />
+      <button id="bntBusca" onClick={() => buscar(document.getElementById('txtBusca').value)}>Buscar</button> 
 
-export default App;
+      <ul>
+        {repositorios.map(repo => (
+          <li key={repo.id}>
+            {repo.name}
+            {repo.favorito && <span>(Favorito)</span>}
+            <button onClick={() => favoritar(repo.id)}>Favoritar</button>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+};
